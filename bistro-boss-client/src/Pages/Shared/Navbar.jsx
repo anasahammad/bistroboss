@@ -1,19 +1,36 @@
 import { Link } from "react-router-dom";
-
+import useAuth from "../../hooks/useAuth";
+import { FaCartPlus } from "react-icons/fa";
+import useCart from "../../hooks/useCart";
 
 const Navbar = () => {
+  const {user, logout} = useAuth()
+  const [carts] = useCart()
     const navLinks = <>
  <li><Link to="/">Home</Link></li>
  <li><Link to="/menu">Menu</Link></li>
  <li><Link to="/order/salad">Order Food</Link></li>
- <li><Link to="/login">Login</Link></li>
- <li><Link to="/sign-up">Sign Up</Link></li>
+ <li><Link to="/">
+ <button className="btn">
+  <FaCartPlus/>
+  <div className="badge badge-secondary">+{carts?.length}</div>
+</button>
+  </Link></li>
+
+ 
+    {
+      !user &&  (<>
+     <li><Link to="/login">Login</Link></li>
+     <li><Link to="/sign-up">Sign Up</Link></li>
+      </> )
+       
       
+    }  
      
     </>
     return (
         <div>
-           <div className="navbar fixed max-w-screen-xl mx-auto opacity-35 text-white z-10  bg-black">
+           <div className="navbar fixed max-w-screen-xl mx-auto opacity-30 text-white z-10  bg-black">
   <div className="navbar-start">
     <div className="dropdown">
       <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -31,7 +48,13 @@ const Navbar = () => {
     </ul>
   </div>
   <div className="navbar-end">
-    <a className="btn">Button</a>
+    {
+      user &&  (<>
+      <img src={user?.photoURL}  className="w-12 h-12 tooltip tooltip-bottom rounded-full cursor-pointer" data-tip={user?.displayName} alt="" />
+             <button className="btn btn-ghost" onClick={()=>logout()}>Logout</button>
+      </>)
+    }
+   
   </div>
 </div> 
         </div>

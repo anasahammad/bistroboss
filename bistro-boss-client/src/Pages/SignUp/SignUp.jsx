@@ -1,10 +1,44 @@
+import axios from 'axios';
 import authenticationImg from '../../assets/asset/others/authentication2.png'
-
+import { useForm } from "react-hook-form"
+import useAuth from '../../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 const SignUp = () => {
-    const handleSignUp = event =>{
-        event.preventDefault()
-        
+const {createUser, updateUser} = useAuth()
+const navigate = useNavigate()
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm()
+  
+
+  const onSubmit = async (data) => {
+    const image = data.photo[0]
+    const formData = new FormData()
+    formData.append('image', image)
+
+    try{
+     const response =  await axios.post(`https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`, formData)
+      
+     const photo = response.data.data.display_url;
+     console.log(photo);
+     
+      const result = await createUser(data.email, data.password)
+      console.log(result);
+
+      await updateUser(data.name, photo)
+      navigate('/')
     }
+    catch (err){
+      console.log(err);
+    }
+    
+  
+
+   
+  }
     return (
         <div className="hero min-h-screen">
   <div className="hero-content flex-col lg:flex-row-reverse">
@@ -12,21 +46,34 @@ const SignUp = () => {
       <img  className="w-[600px] h-[400px]" src={authenticationImg} alt="" />
     </div>
     <div className="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-      <form onSubmit={handleSignUp} className="card-body">
+      <form onSubmit={handleSubmit(onSubmit)} className="card-body">
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Name</span>
+          </label>
+          <input {...register("name", { required: true })} type="text" name="name" placeholder="Name" className="input input-bordered"  />
+          {errors.name && <span className='text-red-600'>This field is required</span>}
+        </div>
         <div className="form-control">
           <label className="label">
             <span className="label-text">Email</span>
           </label>
-          <input type="email" name="email" placeholder="email" className="input input-bordered" required />
+          <input {...register("email", { required: true })} type="email" name="email" placeholder="email" className="input input-bordered"  />
+          {errors.email && <span className='text-red-600'>This field is required</span>}
         </div>
         <div className="form-control">
           <label className="label">
             <span className="label-text">Password</span>
           </label>
-          <input type="password" name="password" placeholder="password" className="input input-bordered" required />
+          <input {...register("password", { required: true, minLength: 6,  maxLength: 20 })} type="password" name="password" placeholder="password" className="input input-bordered"  />
+          {errors.password && <span className='text-red-600'>This field is required</span>}
+        </div>
+        <div className="form-control">
           <label className="label">
-            <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
+            <span className="label-text">Upload Photo</span>
           </label>
+          <input  {...register("photo", { required: true })} type="file" name="photo" placeholder="Upload" className="input input-bordered"  />
+          {errors.photo && <span className='text-red-600'>This field is required</span>}
         </div>
        
         <div className="form-control mt-6">

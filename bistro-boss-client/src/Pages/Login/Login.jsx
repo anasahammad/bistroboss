@@ -2,10 +2,13 @@
 import { useEffect, useRef, useState } from "react";
 import authenticationImg from "../../assets/asset/others/authentication1.png"
 
-import { loadCaptchaEnginge, LoadCanvasTemplate, LoadCanvasTemplateNoReload, validateCaptcha } from 'react-simple-captcha';
+import { loadCaptchaEnginge, LoadCanvasTemplate,  validateCaptcha } from 'react-simple-captcha';
 import useAuth from "../../hooks/useAuth";
+import { useLocation, useNavigate } from "react-router-dom";
 const Login = () => {
-    const captchaRef = useRef(null)
+   const navigate = useNavigate()
+   const location = useLocation()
+   const from = location.state || "/"
     const { signIn} = useAuth()
     const [disabled, setDisabled] = useState(true)
     useEffect(()=>{
@@ -20,11 +23,12 @@ const Login = () => {
         signIn(email, password)
         .then(result=> {
             console.log(result.user);
+            navigate(from)
         })
     }
 
-    const handleCaptchaValidate = ()=>{
-        const user_captcha_value = captchaRef.current.value;
+    const handleCaptchaValidate = (e)=>{
+        const user_captcha_value = e.target.value;
         if(validateCaptcha(user_captcha_value)){
             setDisabled(false)
            return alert('Validation completed! Please login ')
@@ -61,8 +65,8 @@ const Login = () => {
           <label className="label">
           <LoadCanvasTemplate />
           </label>
-          <input ref={captchaRef} type="text" name="captcha" placeholder="type here" className="input input-bordered" required />
-          <button onClick={handleCaptchaValidate} className="btn btn-outline btn-xs mt-2">Validate</button>
+          <input onBlur={handleCaptchaValidate} type="text" name="captcha" placeholder="type here" className="input input-bordered" required />
+         
          
         </div>
         <div className="form-control mt-6">
