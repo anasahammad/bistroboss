@@ -3,13 +3,16 @@ import authenticationImg from '../../assets/asset/others/authentication2.png'
 import { useForm } from "react-hook-form"
 import useAuth from '../../hooks/useAuth';
 import { useNavigate } from 'react-router-dom';
+import useAxiosPublic from '../../hooks/useAxiosPublic';
+import SocialLogin from '../../components/social/SocialLogin';
 const SignUp = () => {
 const {createUser, updateUser} = useAuth()
 const navigate = useNavigate()
+const axiosPublic = useAxiosPublic()
   const {
     register,
     handleSubmit,
-    watch,
+   
     formState: { errors },
   } = useForm()
   
@@ -29,7 +32,18 @@ const navigate = useNavigate()
       console.log(result);
 
       await updateUser(data.name, photo)
-      navigate('/')
+      const userInfo = {
+        name: data.name,
+        email: data.email
+      }
+      axiosPublic.post('/users', userInfo)
+      .then(res=>{
+        if(res.data.insertedId){
+          console.log('user added to the db');
+          navigate('/')
+        }
+      })
+    
     }
     catch (err){
       console.log(err);
@@ -80,8 +94,11 @@ const navigate = useNavigate()
           <button  className="btn bg-[#d1a054b3] text-white">Sign Up</button>
         </div>
       </form>
+      <SocialLogin text={`Already have an accout? please `} anchor={'Login'} to="/login"/>
     </div>
+   
   </div>
+
 </div>
     );
 };

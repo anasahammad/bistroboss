@@ -5,6 +5,7 @@ import authenticationImg from "../../assets/asset/others/authentication1.png"
 import { loadCaptchaEnginge, LoadCanvasTemplate,  validateCaptcha } from 'react-simple-captcha';
 import useAuth from "../../hooks/useAuth";
 import { useLocation, useNavigate } from "react-router-dom";
+import SocialLogin from "../../components/social/SocialLogin";
 const Login = () => {
    const navigate = useNavigate()
    const location = useLocation()
@@ -73,7 +74,9 @@ const Login = () => {
           <button disabled={disabled} className="btn bg-[#d1a054b3] text-white">Login</button>
         </div>
       </form>
+      <SocialLogin text={"Don't have any account? please"} to="/sign-up" anchor={"Sign Up"}></SocialLogin>
     </div>
+   
   </div>
 </div>
     );
