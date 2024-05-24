@@ -149,6 +149,18 @@ const verifyAdmin = async(req, res, next)=>{
       res.send(result)
     })
 
+    app.patch('/menu/:id', async(req, res)=>{
+      const item = req.body;
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)}
+      const updatedDoc = {
+          $set: {
+             ...item
+          }
+      }
+      const result = await menuCollection.updateOne(query, updatedDoc)
+      res.send(result)
+    })
     //get all reviews
     app.get('/reviews', async(req, res)=>{
         const result = await reviewCollection.find().toArray()
