@@ -2,11 +2,12 @@ import { FaAd, FaCalendar, FaHome, FaList, FaShoppingCart, FaUsers, FaUtensils, 
 import { FaBook } from "react-icons/fa6";
 import { IoMenu } from "react-icons/io5";
 import { NavLink, Outlet } from "react-router-dom";
+import useAdmin from "../hooks/useAdmin";
 
 
 const Dashboard = () => {
 
-    const isAdmin = true;
+    const [isAdmin] = useAdmin();
     return (
         <div className="flex">
            <div className="w-64 min-h-screen bg-orange-400">

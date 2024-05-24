@@ -8,13 +8,13 @@ const SocialLogin = ({text, anchor, to}) => {
     const {googleLogin} = useAuth()
     const navigate = useNavigate()
     const location = useLocation()
-    const from = location.pathname.state || "/"
+    const from = location.state || "/"
     const axiosPublic = useAxiosPublic()
 
     const handleGoogle = ()=>{
         googleLogin()
         .then(result =>{
-            console.log(result.user);
+            // console.log(result.user);
             const userInfo = {
                 email: result.user?.email,
                 name: result.user?.displayName
